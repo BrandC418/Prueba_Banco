@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "cuentas")
 @EntityListeners(AuditingEntityListener.class)  //Para auditorias
-@Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Cuenta {
 
@@ -33,6 +32,30 @@ public class Cuenta {
     @DecimalMin(value = "0.0", inclusive = true, message = "El saldo no puede ser negativo.")
     @DecimalMax(value = "10000000.00", message = "El saldo no puede exceder $10,000,000.00")
     private BigDecimal saldo;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(BigDecimal saldo) {
+        this.saldo = saldo;
+    }
 
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
