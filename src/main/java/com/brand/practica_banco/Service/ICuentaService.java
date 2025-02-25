@@ -13,9 +13,9 @@ public interface ICuentaService {
 
     public List<Cuenta> listar();
 
-    public Optional<Cuenta> buscar(Long id);
+    public Cuenta buscar(Long id);
 
     public void eliminar(Long id);
 
-    public Optional<Cuenta> buscarPorNombre(String nombre);
+    public Cuenta buscarPorNombre(String nombre);
 }

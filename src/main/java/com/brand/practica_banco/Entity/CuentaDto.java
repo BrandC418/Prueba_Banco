@@ -1,5 +1,6 @@
 package com.brand.practica_banco.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 public class CuentaDto {
     private Long id;
 
+    @Column(nullable = false, length = 100, unique = true)
     @NotBlank(message = "El nombre no puede estar vacío.")
     @Size(max = 100, message = "El nombre no puede tener más de 100 caracteres.")
     private String nombre;

@@ -5,8 +5,6 @@ import com.brand.practica_banco.Entity.CuentaDto;
 import com.brand.practica_banco.Exceptions.RecursoNoEncontradoException;
 import com.brand.practica_banco.Service.CuentaService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +34,6 @@ public class CuentaController {
     //Guardar
     @PostMapping
     public ResponseEntity<?> guardar(@Valid @RequestBody CuentaDto cuentaDto){
-        if(service.buscarPorNombre(cuentaDto.getNombre()).isPresent()){
-            throw new IllegalArgumentException("La cuenta con nombre " + cuentaDto.getNombre() + " ya existe.");
-        }
         Cuenta cuenta = new Cuenta(null, cuentaDto.getNombre(), cuentaDto.getSaldo());
         Cuenta guardado = service.guardar(cuenta);
         return ResponseEntity.created(URI.create("/api/banco/cuenta/" + guardado.getId())).body(guardado);
@@ -47,9 +42,7 @@ public class CuentaController {
     //Editar
     @PutMapping("{id}")
     public ResponseEntity<?> editar(@PathVariable Long id, @Valid @RequestBody CuentaDto cuentaDto){
-        Cuenta cuenta = service.buscar(id).orElseThrow(
-                () -> new RecursoNoEncontradoException("Cuenta no encontrada")
-        );
+        Cuenta cuenta = service.buscar(id);
         cuenta.setNombre(cuentaDto.getNombre());
         cuenta.setSaldo(cuentaDto.getSaldo());
         return ResponseEntity.ok(service.editar(cuenta));
@@ -58,17 +51,13 @@ public class CuentaController {
     //Buscar por Id
     @GetMapping("{id}")
     public ResponseEntity<Cuenta> buscarPorId(@PathVariable Long id){
-        return service.buscar(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cuenta con id " + id + " no encontrado."));
+        Cuenta cuenta = service.buscar(id);
+        return ResponseEntity.ok(cuenta);
     }
 
     //Eliminar
     @DeleteMapping("{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id){
-        if(service.buscar(id).isEmpty()){
-            throw new RecursoNoEncontradoException("Cuenta con id " + id + " no encontrada.");
-        }
         service.eliminar(id);
         return ResponseEntity.noContent().build();
     }
@@ -76,8 +65,7 @@ public class CuentaController {
     //Buscar por nombre
     @GetMapping("/nombre/{nombre}")
     public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre) {
-        return service.buscarPorNombre(nombre)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cuenta con nombre " + nombre + " no encontrada."));
+        Cuenta cuenta = service.buscarPorNombre(nombre);
+        return ResponseEntity.ok(cuenta);
     }
 }
