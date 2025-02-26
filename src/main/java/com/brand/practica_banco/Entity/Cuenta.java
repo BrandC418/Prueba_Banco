@@ -46,6 +46,14 @@ public class Cuenta {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd-HH:mm:ss")
     private LocalDateTime fechaActualizacion;
 
+    @Builder
+    public Cuenta(Long id, String nombre, BigDecimal saldo){
+        this.id = id;
+        this.nombre = nombre;
+        this.saldo = saldo;
+        //Los campos de auditoria (fechaCreacion, fechaActualizacion) NO se incluye aquí.
+    }
+
     public Long getId() {
         return id;
     }
@@ -84,13 +92,5 @@ public class Cuenta {
 
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
-    }
-
-    @Builder
-    public Cuenta(Long id, String nombre, BigDecimal saldo){
-        this.id = id;
-        this.nombre = nombre;
-        this.saldo = saldo;
-        //Los campos de auditoria (fechaCreacion, fechaActualizacion) NO se incluye aquí.
     }
 }
