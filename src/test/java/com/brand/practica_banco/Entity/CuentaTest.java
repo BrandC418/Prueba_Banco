@@ -31,7 +31,7 @@ public class CuentaTest {
 
     //Datos válidos
     @Test
-    public void whenValidCuenta_thenNoConstraintViolations(){
+    public void whenValidCuenta_thenNoConstraintViolations() {
         Cuenta cuenta = new Cuenta(null, "Juan Perez", new BigDecimal("5000.00"));
 
         Set<ConstraintViolation<Cuenta>> violations = validator.validate(cuenta);
@@ -41,10 +41,10 @@ public class CuentaTest {
 
     //Agrupan los test para el atributo NOMBRE
     @Nested
-    public class ValidatingConstraintsNombre{
+    public class ValidatingConstraintsNombre {
         //Cuando el nombre está en blanco
         @Test
-        public void whenNombreIsBlank_thenConstraintViolations(){
+        public void whenNombreIsBlank_thenConstraintViolations() {
             Cuenta cuenta = new Cuenta(null, "", new BigDecimal("5000.00"));
 
             Set<ConstraintViolation<Cuenta>> violations = validator.validate(cuenta);
@@ -70,7 +70,7 @@ public class CuentaTest {
         @Test
         public void whenNombreTooLong_thenConstraintViolations() {
             String longName = "A".repeat(101);
-            Cuenta cuenta = new Cuenta(null, longName , new BigDecimal("5000.00"));
+            Cuenta cuenta = new Cuenta(null, longName, new BigDecimal("5000.00"));
 
             Set<ConstraintViolation<Cuenta>> violations = validator.validate(cuenta);
 
@@ -81,7 +81,7 @@ public class CuentaTest {
     }
 
     @Nested
-    public class ValidatingConstraintsSaldo{
+    public class ValidatingConstraintsSaldo {
         //Saldo nulo
         @Test
         public void whenSaldoIsNull_thenConstraintViolations() {
