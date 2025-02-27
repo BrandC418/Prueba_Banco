@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cuentas")
@@ -92,5 +93,28 @@ public class Cuenta {
 
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Cuenta cuenta = (Cuenta) o;
+        return Objects.equals(id, cuenta.id) && Objects.equals(nombre, cuenta.nombre) && Objects.equals(saldo, cuenta.saldo) && Objects.equals(fechaCreacion, cuenta.fechaCreacion) && Objects.equals(fechaActualizacion, cuenta.fechaActualizacion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, saldo, fechaCreacion, fechaActualizacion);
+    }
+
+    @Override
+    public String toString() {
+        return "Cuenta{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", saldo=" + saldo +
+                ", fechaCreacion=" + fechaCreacion +
+                ", fechaActualizacion=" + fechaActualizacion +
+                '}';
     }
 }
