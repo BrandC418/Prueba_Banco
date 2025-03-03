@@ -1,0 +1,43 @@
+name: CI-Test Java Spring Boot
+on:
+  push:
+    branches:
+      -main
+      -develop
+  pull_request:
+    branches:
+      -main
+      -develop
+jobs:
+  test:
+    name: Ejecutar Pruebas Unitarias e Integracion
+    runs-on: ubuntu-latest
+
+    steps:
+      -name: Clonar Repositorio
+        uses: actions/checkout@v4
+
+      -name: Configurar JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+          
+      -name: Instalar dependencias
+        run: mvn dependency:resolve
+
+      -name: Ejectuar pruebas Unitarias
+        run: mvn test
+
+      -name: Ejecutar Pruebas de Integracion con H2
+        run: mvn verify
+        env:
+          SPRING_PROFILES_ACTIVE: test
+
+      -name: Subir reportes de pruebas (opcional)
+        if: always()
+        uses: actios/upload-artifact@v4
+        with:
+          name: test-reports
+          path: target/surefire-reports
