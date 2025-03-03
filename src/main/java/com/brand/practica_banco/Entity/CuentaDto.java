@@ -7,7 +7,6 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class CuentaDto {
     private Long id;
@@ -21,6 +20,12 @@ public class CuentaDto {
     @DecimalMin(value = "0.0", inclusive = true, message = "El saldo no puede ser negativo.")
     @DecimalMax(value = "10000000.00", message = "El saldo no puede exceder $10,000,000.00")
     private BigDecimal saldo;
+
+    public CuentaDto(Long id, String nombre, BigDecimal saldo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.saldo = saldo;
+    }
 
     public Long getId() {
         return id;

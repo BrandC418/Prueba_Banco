@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cuentas")
@@ -26,13 +27,33 @@ public class Cuenta {
     @Column(nullable = false, length = 100, unique = true)
     @NotBlank(message = "El nombre no puede estar vacío.")
     @Size(max = 100, message = "El nombre no puede tener mas de 100 caracteres.")
+    @Pattern(regexp = "^[A-Za-záéíóúÁÉÍÓÚñÑ\\s]+$", message = "El nombre solo puede contener letras y espacios.")
     private String nombre;
 
     @Column(nullable = false, precision = 15, scale = 2)
     @NotNull(message = "El saldo no puede ser nulo.")
     @DecimalMin(value = "0.0", inclusive = true, message = "El saldo no puede ser negativo.")
     @DecimalMax(value = "10000000.00", message = "El saldo no puede exceder $10,000,000.00")
+    @Digits(integer = 13, fraction = 2, message = "El saldo debe tener máximo 2 decimales.")
     private BigDecimal saldo;
+
+    @CreatedDate
+    @Column(name = "fecha_creacion", updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd-HH:mm:ss")
+    private LocalDateTime fechaCreacion;
+
+    @LastModifiedDate
+    @Column(name = "fecha_actualizacion")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd-HH:mm:ss")
+    private LocalDateTime fechaActualizacion;
+
+    @Builder
+    public Cuenta(Long id, String nombre, BigDecimal saldo){
+        this.id = id;
+        this.nombre = nombre;
+        this.saldo = saldo;
+        //Los campos de auditoria (fechaCreacion, fechaActualizacion) NO se incluye aquí.
+    }
 
     public Long getId() {
         return id;
@@ -74,21 +95,26 @@ public class Cuenta {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    @CreatedDate
-    @Column(name = "fecha_creacion", updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd-HH:mm:ss")
-    private LocalDateTime fechaCreacion;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Cuenta cuenta = (Cuenta) o;
+        return Objects.equals(id, cuenta.id) && Objects.equals(nombre, cuenta.nombre) && Objects.equals(saldo, cuenta.saldo) && Objects.equals(fechaCreacion, cuenta.fechaCreacion) && Objects.equals(fechaActualizacion, cuenta.fechaActualizacion);
+    }
 
-    @LastModifiedDate
-    @Column(name = "fecha_actualizacion")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd-HH:mm:ss")
-    private LocalDateTime fechaActualizacion;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, saldo, fechaCreacion, fechaActualizacion);
+    }
 
-    @Builder
-    public Cuenta(Long id, String nombre, BigDecimal saldo){
-        this.id = id;
-        this.nombre = nombre;
-        this.saldo = saldo;
-        //Los campos de auditoria (fechaCreacion, fechaActualizacion) NO se incluye aquí.
+    @Override
+    public String toString() {
+        return "Cuenta{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", saldo=" + saldo +
+                ", fechaCreacion=" + fechaCreacion +
+                ", fechaActualizacion=" + fechaActualizacion +
+                '}';
     }
 }
